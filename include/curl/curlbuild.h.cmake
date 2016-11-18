@@ -159,7 +159,11 @@
 #endif
 
 /* The size of `long', as computed by sizeof. */
+#if defined(__LP64__)
+#define CURL_SIZEOF_LONG 8
+#else
 #define CURL_SIZEOF_LONG ${CURL_SIZEOF_LONG}
+#endif
 
 /* Integral data type used for curl_socklen_t. */
 #define CURL_TYPEOF_CURL_SOCKLEN_T ${CURL_TYPEOF_CURL_SOCKLEN_T}
