@@ -116,9 +116,9 @@ export(TARGETS ${LIB_NAME}
        NAMESPACE CURL::
 )
 
-install(EXPORT libcurl-target
-        FILE libcurl-target.cmake
-        NAMESPACE CURL::
-        DESTINATION ${CURL_INSTALL_CMAKE_DIR}
-)
+#install(EXPORT libcurl-target
+#        FILE libcurl-target.cmake
+#        NAMESPACE CURL::
+#        DESTINATION ${CURL_INSTALL_CMAKE_DIR}
+#)
 
