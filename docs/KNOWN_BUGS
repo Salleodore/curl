@@ -43,10 +43,7 @@ problems may have been fixed or changed somewhat since this was written!
  4.4 --upload-file . hang if delay in STDIN
 
  5. Build and portability issues
- 5.1 Windows Borland compiler
  5.2 curl-config --libs contains private details
- 5.3 Windows: No execute on suitable sections
- 5.4 AIX shared build with c-ares fails
  5.5 can't handle Unicode arguments in Windows
  5.6 cmake support gaps
  5.7 Visual Studio project gaps
@@ -70,6 +67,7 @@ problems may have been fixed or changed somewhat since this was written!
  7.7 FTP and empty path parts in the URL
  7.8 Premature transfer end but healthy control channel
  7.9 Passive transfer tries only one IP address
+ 7.10 Stick to same family over SOCKS proxy
 
  8. TELNET
  8.1 TELNET and time limtiations don't work
@@ -346,22 +344,11 @@ problems may have been fixed or changed somewhat since this was written!
 
 5. Build and portability issues
 
-5.1 Windows Borland compiler
-
- When building with the Windows Borland compiler, it fails because the "tlib"
- tool doesn't support hyphens (minus signs) in file names and we have such in
- the build.  https://curl.haxx.se/bug/view.cgi?id=1222
-
 5.2 curl-config --libs contains private details
 
  "curl-config --libs" will include details set in LDFLAGS when configure is
  run that might be needed only for building libcurl. Further, curl-config
  --cflags suffers from the same effects with CFLAGS/CPPFLAGS.
-
-5.4 AIX shared build with c-ares fails
-
- curl version 7.12.2 fails on AIX if compiled with --enable-ares.  The
- workaround is to combine --enable-ares with --disable-shared
 
 5.5 can't handle Unicode arguments in Windows
 
@@ -549,6 +536,15 @@ problems may have been fixed or changed somewhat since this was written!
 
  See https://github.com/curl/curl/issues/1508
 
+7.10 Stick to same family over SOCKS proxy
+
+ When asked to do FTP over a SOCKS proxy, it might connect to the proxy (and
+ then subsequently to the remote server) using for example IPv4. When doing
+ the second connection, curl should make sure that the second connection is
+ using the same IP protocol version as the first connection did and not try
+ others, since the remote server will only accept the same.
+
+ See https://curl.haxx.se/mail/archive-2018-07/0000.html
 
 8. TELNET
 

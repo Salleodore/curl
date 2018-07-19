@@ -216,7 +216,7 @@ get_alg_id_by_name(char *name)
 {
   char tmp[LONGEST_ALG_ID] = { 0 };
   char *nameEnd = strchr(name, ':');
-  size_t n = nameEnd ? min(nameEnd - name, LONGEST_ALG_ID - 1) : \
+  size_t n = nameEnd ? min((size_t)(nameEnd - name), LONGEST_ALG_ID - 1) : \
     min(strlen(name), LONGEST_ALG_ID - 1);
   strncpy(tmp, name, n);
   tmp[n] = 0;
@@ -234,30 +234,66 @@ get_alg_id_by_name(char *name)
 #endif
   CIPHEROPTION(CALG_RSA_KEYX);
   CIPHEROPTION(CALG_DES);
+#ifdef CALG_3DES_112
   CIPHEROPTION(CALG_3DES_112);
+#endif
   CIPHEROPTION(CALG_3DES);
   CIPHEROPTION(CALG_DESX);
   CIPHEROPTION(CALG_RC2);
   CIPHEROPTION(CALG_RC4);
   CIPHEROPTION(CALG_SEAL);
+#ifdef CALG_DH_SF
   CIPHEROPTION(CALG_DH_SF);
+#endif
   CIPHEROPTION(CALG_DH_EPHEM);
+#ifdef CALG_AGREEDKEY_ANY
   CIPHEROPTION(CALG_AGREEDKEY_ANY);
+#endif
+#ifdef CALG_HUGHES_MD5
   CIPHEROPTION(CALG_HUGHES_MD5);
+#endif
   CIPHEROPTION(CALG_SKIPJACK);
+#ifdef CALG_TEK
   CIPHEROPTION(CALG_TEK);
+#endif
   CIPHEROPTION(CALG_CYLINK_MEK);
   CIPHEROPTION(CALG_SSL3_SHAMD5);
+#ifdef CALG_SSL3_MASTER
   CIPHEROPTION(CALG_SSL3_MASTER);
+#endif
+#ifdef CALG_SCHANNEL_MASTER_HASH
   CIPHEROPTION(CALG_SCHANNEL_MASTER_HASH);
+#endif
+#ifdef CALG_SCHANNEL_MAC_KEY
   CIPHEROPTION(CALG_SCHANNEL_MAC_KEY);
+#endif
+#ifdef CALG_SCHANNEL_ENC_KEY
   CIPHEROPTION(CALG_SCHANNEL_ENC_KEY);
+#endif
+#ifdef CALG_PCT1_MASTER
   CIPHEROPTION(CALG_PCT1_MASTER);
+#endif
+#ifdef CALG_SSL2_MASTER
   CIPHEROPTION(CALG_SSL2_MASTER);
+#endif
+#ifdef CALG_TLS1_MASTER
   CIPHEROPTION(CALG_TLS1_MASTER);
+#endif
+#ifdef CALG_RC5
   CIPHEROPTION(CALG_RC5);
+#endif
+#ifdef CALG_HMAC
   CIPHEROPTION(CALG_HMAC);
+#endif
+#if !defined(__W32API_MAJOR_VERSION) || \
+    !defined(__W32API_MINOR_VERSION) || \
+    defined(__MINGW64_VERSION_MAJOR) || \
+    (__W32API_MAJOR_VERSION > 5)     || \
+    ((__W32API_MAJOR_VERSION == 5) && (__W32API_MINOR_VERSION > 0))
+  /* CALG_TLS1PRF has a syntax error in MinGW's w32api up to version 5.0,
+     see https://osdn.net/projects/mingw/ticket/38391 */
   CIPHEROPTION(CALG_TLS1PRF);
+#endif
 #ifdef CALG_HASH_REPLACE_OWF
   CIPHEROPTION(CALG_HASH_REPLACE_OWF);
 #endif
@@ -2025,7 +2061,8 @@ static void Curl_schannel_checksum(const unsigned char *input,
     if(!CryptCreateHash(hProv, algId, 0, 0, &hHash))
       break; /* failed */
 
-    if(!CryptHashData(hHash, (const BYTE*)input, (DWORD)inputlen, 0))
+    /* workaround for original MinGW, should be (const BYTE*) */
+    if(!CryptHashData(hHash, (BYTE*)input, (DWORD)inputlen, 0))
       break; /* failed */
 
     /* get hash size */
