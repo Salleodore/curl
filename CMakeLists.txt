@@ -47,6 +47,8 @@ include(CheckCCompilerFlag)
 
 project(CURL C)
 
+SET( HAVE_POLL_FINE_EXITCODE 0 CACHE STRING "Blah" FORCE )
+
 message(WARNING "the curl cmake build system is poorly maintained. Be aware")
 
 file(READ ${CURL_SOURCE_DIR}/include/curl/curlver.h CURL_VERSION_H_CONTENTS)
@@ -75,8 +77,8 @@ include_directories(${CURL_SOURCE_DIR}/include)
 
 option(CURL_WERROR "Turn compiler warnings into errors" OFF)
 option(PICKY_COMPILER "Enable picky compiler options" ON)
-option(BUILD_CURL_EXE "Set to ON to build curl executable." ON)
-option(CURL_STATICLIB "Set to ON to build libcurl with static linking." OFF)
+option(BUILD_CURL_EXE "Set to ON to build curl executable." OFF)
+option(CURL_STATICLIB "Set to ON to build libcurl with static linking." ON)
 option(ENABLE_ARES "Set to ON to enable c-ares support" OFF)
 if(WIN32)
   option(CURL_STATIC_CRT "Set to ON to build libcurl with static CRT on Windows (/MT)." OFF)
@@ -212,10 +214,10 @@ cmake_dependent_option(ENABLE_MANUAL "to provide the built-in manual"
     ON "NROFF_USEFUL;PERL_FOUND"
     OFF)
 
-if(NOT PERL_FOUND)
-  message(STATUS "Perl not found, testing disabled.")
+#if(NOT PERL_FOUND)
+  #message(STATUS "Perl not found, testing disabled.")
   set(BUILD_TESTING OFF)
-endif()
+#endif()
 if(ENABLE_MANUAL)
   set(USE_MANUAL ON)
 endif()
@@ -507,8 +509,8 @@ if(CURL_ZLIB)
     set(HAVE_ZLIB ON)
     set(HAVE_LIBZ ON)
     list(APPEND CURL_LIBS ${ZLIB_LIBRARIES})
-    include_directories(${ZLIB_INCLUDE_DIRS})
-    list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIRS})
+    include_directories(${ZLIB_PUBLIC_HDRS})
+    list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_PUBLIC_HDRS})
   endif()
 endif()
 
@@ -1162,7 +1164,8 @@ endif()
 
 include(CTest)
 if(BUILD_TESTING)
-  add_subdirectory(tests)
+  #message("SURPRISE MOTHERFUCKEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERS")
+  #add_subdirectory(tests)
 endif()
 
 # Helper to populate a list (_items) with a label when conditions (the remaining
