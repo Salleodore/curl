@@ -158,8 +158,8 @@
 #  include <sys/poll.h>
 #endif
 
-/* The size of `long', as computed by sizeof. */
-#if defined(__LP64__)
+
+#if defined(LP64)
 #define CURL_SIZEOF_LONG 8
 #else
 #define CURL_SIZEOF_LONG ${CURL_SIZEOF_LONG}
