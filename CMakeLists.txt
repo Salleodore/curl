@@ -268,9 +268,12 @@ if(ENABLE_THREADED_RESOLVER)
   set(CURL_LIBS ${CURL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-# Check for all needed libraries
-check_library_exists_concat("dl"     dlopen       HAVE_LIBDL)
-check_library_exists_concat("socket" connect      HAVE_LIBSOCKET)
+if( NOT IOS )
+  # Check for all needed libraries
+  check_library_exists_concat("dl"     dlopen       HAVE_LIBDL)
+  check_library_exists_concat("socket" connect      HAVE_LIBSOCKET)
+endif()
+
 check_library_exists("c" gethostbyname "" NOT_NEED_LIBNSL)
 
 # Yellowtab Zeta needs different libraries than BeOS 5.
@@ -492,8 +495,10 @@ if(NOT CURL_DISABLE_LDAPS)
   check_include_file_concat("ldapssl.h"  HAVE_LDAPSSL_H)
 endif()
 
-# Check for idn
-check_library_exists_concat("idn2" idn2_lookup_ul HAVE_LIBIDN2)
+if( NOT IOS )
+  # Check for idn
+  check_library_exists_concat("idn2" idn2_lookup_ul HAVE_LIBIDN2)
+endif()
 
 # Check for symbol dlopen (same as HAVE_LIBDL)
 check_library_exists("${CURL_LIBS}" dlopen "" HAVE_DLOPEN)
@@ -813,6 +818,8 @@ endif()
 
 check_symbol_exists(basename      "${CURL_INCLUDES}" HAVE_BASENAME)
 check_symbol_exists(socket        "${CURL_INCLUDES}" HAVE_SOCKET)
+
+
 # poll on macOS is unreliable, it first did not exist, then was broken until
 # fixed in 10.9 only to break again in 10.12.
 if(NOT APPLE)
