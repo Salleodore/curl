@@ -177,7 +177,7 @@ static unsigned long OpenSSL_version_num(void)
 #if ((OPENSSL_VERSION_NUMBER >= 0x10101000L) && \
      !defined(LIBRESSL_VERSION_NUMBER) &&       \
      !defined(OPENSSL_IS_BORINGSSL))
-#define HAVE_SSL_CTX_SET_CIPHERSUITES
+//#define HAVE_SSL_CTX_SET_CIPHERSUITES
 #endif
 
 #if defined(LIBRESSL_VERSION_NUMBER)
@@ -199,7 +199,7 @@ static unsigned long OpenSSL_version_num(void)
   "ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH"
 #endif
 
-#define ENABLE_SSLKEYLOGFILE
+//#define ENABLE_SSLKEYLOGFILE
 
 #ifdef ENABLE_SSLKEYLOGFILE
 typedef struct ssl_tap_state {
